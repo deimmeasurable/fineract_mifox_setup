@@ -1,20 +1,17 @@
-# Step 1: Use Java 17 to build the project
+# Use Java 17 for the build
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
-# Copy all files from your repo into the container
+# Copy everything
 COPY . .
 
-# Build the Fineract JAR file, skipping tests
+# Build the app
 RUN ./gradlew clean bootJar -x test
 
-# Step 2: Create the final lightweight image
+# Run the app
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-
-# Copy the generated JAR from the build stage
-# Note: The path might vary slightly depending on your Fineract version
+# Note: Ensure this path matches your project structure
 COPY --from=build /app/fineract-provider/build/libs/fineract-provider.jar app.jar
-
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
