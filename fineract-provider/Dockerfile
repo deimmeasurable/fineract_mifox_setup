@@ -1,26 +1,23 @@
-# Stage 1: Build the Java application
+# Stage 1: Build using Java 17
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
-# Copy the Gradle wrapper and configuration files first
+# Copy the wrapper and settings first (helps with caching)
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
-
-# Copy the rest of the source code
 COPY . .
 
-# Grant execution permissions and build the JAR
+# Build the JAR, skipping tests to save time and memory
 RUN chmod +x ./gradlew
 RUN ./gradlew clean bootJar -x test
 
-# Stage 2: Create the runtime image
+# Stage 2: Runtime image
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
-# Copy the built JAR from the first stage
-# Note: This path assumes the standard Fineract structure
+# Note: Ensure this path matches where Gradle outputs your JAR
 COPY --from=build /app/fineract-provider/build/libs/fineract-provider.jar app.jar
 
 EXPOSE 8080
