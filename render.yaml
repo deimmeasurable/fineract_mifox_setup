@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: fineract-mifos
+    runtime: java
+    plan: starter
+    buildCommand: "./gradlew clean bootJar -x test"
+    startCommand: "java -Dloader.path=. -jar build/libs/fineract-provider.jar"
+    envVars:
+      - key: JAVA_VERSION
+        value: 17
+      - key: SPRING_PROFILES_ACTIVE
+        value: dev,basicauth
