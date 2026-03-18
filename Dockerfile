@@ -1,5 +1,5 @@
 # Stage 1: Build using Java 17
-FROM eclipse-temurin:17-jdk-alpine AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 WORKDIR /app
 
 # Copy the wrapper and settings first (helps with caching)
@@ -10,7 +10,7 @@ COPY settings.gradle .
 COPY fineract-provider .
 
 # Use Java 17
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:25-jdk
 
 # Set working directory
 WORKDIR /app
